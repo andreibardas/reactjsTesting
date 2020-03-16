@@ -2,7 +2,8 @@ import React from "react";
 import "./Login.styles.scss";
 
 
-
+// o componenta poate fi fie functie fie clasa (se spune ca componentele functii au o performanta mai buna)
+// de obicei gasesti clase atunci cand ai state-uri
 class Login extends React.Component {
 
     constructor(props){
@@ -32,7 +33,10 @@ class Login extends React.Component {
   render() {
 
     return (
+      // a se observa diferenta intre JSX si HTML la proprietati precum className (JSX) in loc de classname(HTML)
       <div className="Login">
+        {/* la fel si cu submit */}
+        {/* btw, unde vezi {} inseamna ca inauntru e javascript */}
         <form className="Form" onSubmit={this.handleSubmit}>
           <label>
             First Name:

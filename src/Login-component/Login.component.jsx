@@ -1,54 +1,88 @@
 import React from "react";
 import "./Login.styles.scss";
+import axios from 'axios';
 
 
-// o componenta poate fi fie functie fie clasa (se spune ca componentele functii au o performanta mai buna)
-// de obicei gasesti clase atunci cand ai state-uri
-class Login extends React.Component {
+class Login extends React.Component{
 
-    constructor(props){
-        super(props)
-        this.state = {
-            firstName: "",
-            lastName: "",
-        }
-        this.handleChange1 = this.handleChange1.bind(this);
-        this.handleChange2 = this.handleChange2.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+  constructor(props){
+    super(props)
+
+    this.state = {
+      password: '',
+      email: '',
+    }
+  }
+
+  componentDidMount(){
+    
+  }
+
+
+  changeHandler = (e) =>{
+    this.setState({[e.target.name]: e.target.value})
+  }
+
+  onStoreToken(tokenData) {
+    localStorage.setItem("token", tokenData);
+  }
+
+  
+  submitHandler = (e) => {
+    e.preventDefault()
+
+    
+
+    axios.post('https://webdesigns.ro:10000/thecon2/user/login', this.state)
+    .then(response =>{
+      console.log(response.data[0].token)
+      console.log(response)
+      this.onStoreToken(response.data[0].token)
+
+      axios.get('https://webdesigns.ro:10000/thecon2/user/all', {headers})
+    .then(response => {
+      console.log(response)
+  })
+  .catch(error => {
+      console.log(error)
+  })
+
+    }).catch(error => {
+      console.log(error)
+    })
+
+    const headers = {
+      'Authorization': localStorage.getItem("token"),
+      'validationDate': '25/05/2001',
     }
 
-    handleChange1(event) {
-        this.setState({firstName: event.target.value});
-      }
-      handleChange2(event) {
-        this.setState({lastName: event.target.value});
-      }
-    
-      handleSubmit(event) {
-        alert('This name was submitted: ' +this.state.firstName +" " +this.state.lastName);
-        event.preventDefault();
-      }
 
+    
+   
+  }
 
   render() {
+    const {password, email} = this.state
 
     return (
-      // a se observa diferenta intre JSX si HTML la proprietati precum className (JSX) in loc de classname(HTML)
       <div className="Login">
-        {/* la fel si cu submit */}
-        {/* btw, unde vezi {} inseamna ca inauntru e javascript */}
-        <form className="Form" onSubmit={this.handleSubmit}>
+
+        <form className="Form" onSubmit = {this.submitHandler}>
+
           <label>
-            First Name:
-    <input type="text" name="firstName" value={this.state.firstName} onChange={this.handleChange1}/>
+            Email:
+    <input type="text" name="email" value={email} onChange={this.changeHandler} />
           </label>
 
           <label>
-            Last Name:
-    <input type="text" name="lastName" value={this.state.lastName} onChange={this.handleChange2}/>
+            Password:
+    <input type="text" name="password" value={password} onChange={this.changeHandler} />
           </label>
-          <input type="submit" value="Submit" />
+
+          <button type="submit" >Submit</button>
+
         </form>
+
       </div>
     );
   }
